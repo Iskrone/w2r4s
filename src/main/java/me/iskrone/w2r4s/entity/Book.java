@@ -24,6 +24,8 @@ public class Book {
     private boolean isDone;
     private boolean isAudio;
 
+    private boolean hasPaperBook;
+
     public long getId() {
         return id;
     }
@@ -78,5 +80,13 @@ public class Book {
 
     public void setAudio(boolean audio) {
         isAudio = audio;
+    }
+
+    public boolean isHasPaperBook() {
+        return hasPaperBook;
+    }
+
+    public void setHasPaperBook(boolean hasPaperBook) {
+        this.hasPaperBook = hasPaperBook;
     }
 }
