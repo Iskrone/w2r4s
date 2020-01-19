@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<style>
+    .pagination {
+        display: inline-block;
+    }
+
+    .pagination a {
+        color: black;
+        float: left;
+        padding: 5px 5px;
+        text-decoration: none;
+    }
+
+    .pagination a.active {
+        background-color: gray;
+        color: white;
+        border-radius: 2px;
+    }
+</style>
+
+<head>
+    <title>Book List</title>
+</head>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th th:text="Название" />
+        <th th:text="Автор" />
+        <th th:text="Прочитана" />
+        <th th:text="Есть Аудио" />
+        <th th:text="Есть Бумажная" />
+        <th th:text="Дата прочтения" />
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="book, iStat : ${bookPage.content}"
+        th:style="${iStat.odd}? 'font-weight: bold;'"
+        th:alt-title="${iStat.even}? 'even' : 'odd'">
+        <td th:text="${book.name}" />
+        <td th:text="${book.author}" />
+        <td th:text="${book.isDone}" />
+        <td th:text="${book.isAudio}" />
+        <td th:text="${book.hasPaperBook}" />
+        <td th:text="${book.finishingDate}" />
+    </tr>
+    </tbody>
+</table>
+<div th:if="${bookPage.totalPages > 0}" class="pagination"
+     th:each="pageNumber : ${pageNumbers}">
+    <a th:href="@{/(size=${bookPage.size}, page=${pageNumber})}"
+       th:text=${pageNumber}
+       th:class="${pageNumber==bookPage.number + 1} ? active"></a>
+</div>
+</body>
+</html>
