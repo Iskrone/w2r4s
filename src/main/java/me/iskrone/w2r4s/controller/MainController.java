@@ -34,6 +34,14 @@ import java.util.stream.IntStream;
 @Controller
 public class MainController {
     
+    /*
+    TODO:
+    1. Проверка расширений
+    2. Проверка на имена
+    3. Проверка папки прочитано
+    4. Разыменование в таблице
+     */
+    
     @Autowired
     private BookService bookService;
 
