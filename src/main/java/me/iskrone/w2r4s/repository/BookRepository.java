@@ -10,5 +10,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BookRepository extends CrudRepository<Book, Long>, JpaSpecificationExecutor<Book> {
-    Page<Book> findAllWithPagination(Specification<Book> bookSpec, Pageable pageable);
+    Page<Book> findAll(Specification<Book> bookSpec, Pageable pageable);
+    Page<Book> findAll(Pageable pageable);
 }

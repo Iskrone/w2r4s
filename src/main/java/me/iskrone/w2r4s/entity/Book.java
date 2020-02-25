@@ -66,27 +66,39 @@ public class Book {
         this.finishingDate = finishingDate;
     }
 
-    public boolean isDone() {
+    public boolean getIsDone() {
         return isDone;
     }
 
-    public void setDone(boolean done) {
+    public void setIsDone(boolean done) {
         isDone = done;
     }
 
-    public boolean isAudio() {
+    public boolean getIsAudio() {
         return isAudio;
     }
 
-    public void setAudio(boolean audio) {
+    public void setIsAudio(boolean audio) {
         isAudio = audio;
     }
 
-    public boolean isHasPaperBook() {
+    public boolean getHasPaperBook() {
         return hasPaperBook;
     }
 
     public void setHasPaperBook(boolean hasPaperBook) {
         this.hasPaperBook = hasPaperBook;
+    }
+
+    public String getHasPaperBookStr() {
+        return hasPaperBook ? "Есть" : "Нет";
+    }
+
+    public String getIsAudioStr() {
+        return isAudio ? "Есть" : "Нет";
+    }
+
+    public String getIsDoneStr() {
+        return isDone ? "Прочитана" : "Нет";
     }
 }

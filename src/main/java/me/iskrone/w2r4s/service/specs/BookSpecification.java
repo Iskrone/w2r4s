@@ -15,17 +15,17 @@ public class BookSpecification {
     
     public static Specification<Book> withBookNameIn(final String bookName) {
         return (Specification<Book>) (root, criteriaQuery, criteriaBuilder) -> 
-                criteriaBuilder.equal(root.get("name"), "%" + bookName + "%");
+                criteriaBuilder.like(root.get("name"), "%" + bookName + "%");
     }
 
     public static Specification<Book> withAuthorIn(final String authorName) {
         return (Specification<Book>) (root, criteriaQuery, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("author"), "%" + authorName + "%");
+                criteriaBuilder.like(root.get("author"), "%" + authorName + "%");
     }
 
     public static Specification<Book> withFinishingDate(final String finishingDate) {
         return (Specification<Book>) (root, criteriaQuery, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("finishingDate"), "%" + finishingDate + "%");
+                criteriaBuilder.like(root.get("finishingDate"), "%" + finishingDate + "%");
     }
 
     public static Specification<Book> withIsDone(final Boolean isDone) {

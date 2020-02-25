@@ -23,16 +23,30 @@
 <head>
     <title>Book List</title>
 </head>
+<body>
+<!--<a href="/addBook">Добавить книгу</a>-->
+<a href="/collect">Сканировать папки</a>
+<a href="/download">Экспорт в Эксель</a>
 
+<form action="#" th:action="@{/}" th:object="${filterForm}" method="get">
+    <p>
+        Название: <input  th:field="*{nameFilter}">
+    </p>
+    <p> Автор: <input th:field="*{authorFilter}" /></p>
+    <p>
+        <input type="submit" value="Поиск"/>
+    </p>
+    <!--TODO: Доработать фильтрацию-->
+</form>
 <table border="1">
     <thead>
     <tr>
         <th th:text="Название" />
         <th th:text="Автор" />
         <th th:text="Прочитана" />
-        <th th:text="Есть Аудио" />
-        <th th:text="Есть Бумажная" />
-        <th th:text="Дата прочтения" />
+        <th th:text="Есть_Аудио" />
+        <th th:text="Есть_Бумажная" />
+        <th th:text="Дата_прочтения" />
     </tr>
     </thead>
     <tbody>

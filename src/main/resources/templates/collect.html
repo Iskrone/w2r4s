@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Сканировать папки</title>
+</head>
+<body>
+<p><a href="/">Назад</a> </p>
+<form action="#" th:action="@{/collect}" th:object="${pathForm}" method="get">
+    <p>
+        Сканировать папку: <input th:field="*{path}">
+    </p>
+    <p>
+        <input type="submit" value="Сканировать"/>
+    </p>
+</form>
+<div>
+    <p>
+        Добавлено книг: <b th:text="${result}"/>
+    </p>
+</div>
+</body>
+</html>
