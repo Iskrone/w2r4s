@@ -38,7 +38,7 @@ public class ParseBookTest {
         FolderParser parser = FolderParser.getInstance();
 
         Book book = parser.parse("Богданов Александр - Инженер Мэнни.fb2",
-                "00 Художественные");
+                "00 Художественные", "fb2");
         Assert.assertEquals(testAuthorName, book.getAuthor());
         Assert.assertEquals(testBookName, book.getName());
         Assert.assertEquals(note, book.getNote());
