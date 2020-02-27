@@ -67,7 +67,6 @@ public class BookService {
 
     public Long saveBunchOneByOne(List<Book> books) {
         long count = 0;
-        // Можно переделать на массовое сохранение
         for (Book book : books) {
             Book result = save(book);
             count++;
