@@ -1,9 +1,7 @@
 package me.iskrone.w2r4s.parser;
 
 import me.iskrone.w2r4s.entity.Book;
-import me.iskrone.w2r4s.service.BookService;
 import org.apache.commons.io.FilenameUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.util.*;
@@ -19,7 +17,8 @@ public class FolderParser {
     private Queue<File> foldersQueue = new PriorityQueue<>();
     private List<File> folders = new ArrayList<>();
     private List<Book> books = new ArrayList<>();
-
+    private int countFiles = 0;
+    
     private FolderParser() {
     }
 
@@ -31,20 +30,26 @@ public class FolderParser {
         return parser;
     }
 
-    public void listFilesForFolder(String path) {
+    public void parsePath(String path) {
+        countFiles = 0;
+        listFilesForFolder(path);
+        System.out.println(countFiles);
+    }
+    
+    private void listFilesForFolder(String path) {
         File folder = new File(path);
         for (final File fileEntry : Objects.requireNonNull(folder.listFiles())) {
             if (fileEntry.isDirectory()) {
-                foldersQueue.add(fileEntry);
-                folders.add(fileEntry);
-            } else {
-                String ext = FilenameUtils.getExtension(fileEntry.getName());
-                if (Extension.contains(ext)) {
-                    Book book = parse(fileEntry.getName(), folder.getName(), ext);
-                    if (book != null) {
-                        books.add(book);
+                if (!fileEntry.getName().startsWith("-")) {
+                    if (fileEntry.getName().endsWith(".audio") || fileEntry.getName().endsWith(".html")) {
+                        addBookFromFilename(fileEntry, folder);
+                    } else {
+                        foldersQueue.add(fileEntry);
+                        folders.add(fileEntry);
                     }
                 }
+            } else {
+                addBookFromFilename(fileEntry, folder);
             }
         }
 
@@ -54,16 +59,40 @@ public class FolderParser {
         }
     }
 
-    public Book parse(String fileName, String note, String ext) {
+    private void addBookFromFilename(final File fileEntry, File folder) {
+        String ext = FilenameUtils.getExtension(fileEntry.getName());
+        if (BookExtension.contains(ext)) {
+            Book book = buildBookFromFilename(fileEntry.getName(), folder.getName(), ext);
+            if (book != null) {
+                books.add(book);
+            }
+        }
+    }
+    
+    public Book buildBookFromFilename(String fileName, String note, String ext) {
         Book book = null;
         String[] splits = fileName.split(" - ");
         if (splits.length >= 2) {
             book = new Book();
             book.setNote(note);
-            if (note.equalsIgnoreCase(DONE) || note.equalsIgnoreCase("!" + DONE)) {
+            boolean isBookDoneV1 = note.toUpperCase().startsWith(DONE.toUpperCase());
+            boolean isBookDoneV2 = note.toUpperCase().startsWith(("!" + DONE).toUpperCase());
+            if (isBookDoneV1 || isBookDoneV2) {
                 book.setIsDone(true);
             }
-            book.setAuthor(splits[0]);
+            String fileNameWithoutExt = fileName.substring(0, fileName.length() - ext.length() - 1);
+            if (fileNameWithoutExt.equalsIgnoreCase(note)) {
+                book.setIsAudio(true);
+            }
+            if (BookExtension.AUDIO.name().equalsIgnoreCase(ext)) {
+                book.setIsAudio(true);
+            }
+            String[] authorNameSplits = splits[0].split("\\. ");
+            if (authorNameSplits.length == 2){
+                book.setAuthor(authorNameSplits[1]);
+            } else {
+                book.setAuthor(splits[0]);
+            }
             book.setName(splits[1].substring(0, splits[1].length() - ext.length() - 1));
         }
         return book;
@@ -77,17 +106,24 @@ public class FolderParser {
         return books;
     }
     
-    private enum Extension {
+    private enum BookExtension {
         FB2,
         EPUB,
         PDF,
         DJVU,
         DOC,
-        RTF;
+        RTF,
+        TXT,
+        MOBI,
+        PDO,
+        CBR,
+        COMIX,
+        AUDIO,
+        HTML;
         
         public static boolean contains(String test) {
 
-            for (Extension extension : Extension.values()) {
+            for (BookExtension extension : BookExtension.values()) {
                 if (extension.name().equalsIgnoreCase(test)) {
                     return true;
                 }
