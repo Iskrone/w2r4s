@@ -3,6 +3,7 @@ package me.iskrone.w2r4s.controller;
 import me.iskrone.w2r4s.entity.Book;
 import me.iskrone.w2r4s.forms.FilterForm;
 import me.iskrone.w2r4s.forms.PathForm;
+import me.iskrone.w2r4s.ie.Uploader;
 import me.iskrone.w2r4s.parser.FolderParser;
 import me.iskrone.w2r4s.service.BookService;
 import me.iskrone.w2r4s.service.specs.SearchBook;
@@ -15,13 +16,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,7 +34,6 @@ import java.util.stream.IntStream;
  */
 @Controller
 public class MainController {
-    
     @Autowired
     private BookService bookService;
 
@@ -44,8 +44,8 @@ public class MainController {
             @RequestParam("page") Optional<Integer> page,
             @RequestParam("size") Optional<Integer> size) {
         int currentPage = page.orElse(1);
-        int pageSize = size.orElse(5);
-        Page<Book> bookPage = null;
+        int pageSize = size.orElse(20);
+        Page<Book> bookPage;
         if ((filterForm.getAuthorFilter() != null && !filterForm.getAuthorFilter().equals("")) ||
                 (filterForm.getNameFilter() != null && !filterForm.getNameFilter().equals(""))) {
             SearchBook book = new SearchBook();
@@ -74,11 +74,35 @@ public class MainController {
     public String parseFolders(Model model, @ModelAttribute PathForm pathForm) {
         if (pathForm.getPath() != null) {
             FolderParser parser = FolderParser.getInstance();
-            parser.listFilesForFolder(pathForm.getPath());
+            parser.parsePath(pathForm.getPath());
             Long count = bookService.saveBunchOneByOne(parser.getBooks());
             model.addAttribute("result", count);
         }
         return "collect";
+    }
+
+    @RequestMapping(value = "/uploadFile")
+    public String upload(ModelMap modelMap) {
+        modelMap.addAttribute("booksFromFile", 0);
+        return "uploadFile";
+    }
+
+    @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
+    public String upload(@RequestParam("file") MultipartFile file, 
+                         @RequestParam("isClearBooks") Boolean isClearBooks, 
+                         ModelMap modelMap) throws IOException, ParseException {
+        Long count = 0L;
+        if (file.isEmpty()) {
+            modelMap.addAttribute("file", file);
+            if (isClearBooks) {
+                bookService.clearTable();
+            }
+            Uploader uploader = new Uploader(file.getInputStream());
+            List<Book> books = uploader.parseBooks();
+            count = bookService.saveBunch(books);
+        }
+        modelMap.addAttribute("booksFromFile", count);
+        return "uploadFile";
     }
 
     @GetMapping(value = "/download")
@@ -96,7 +120,7 @@ public class MainController {
         header.createCell(5).setCellValue("Закончена");
         header.createCell(6).setCellValue("Есть аудио");
         header.createCell(7).setCellValue("Есть бумажная книга");
-        
+
         int rowNum = 1;
         for (Book book : allBooks) {
             Row row = sheet.createRow(rowNum++);
