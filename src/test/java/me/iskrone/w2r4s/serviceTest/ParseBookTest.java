@@ -8,14 +8,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * Created by Iskander on 25.01.2020
@@ -37,11 +33,20 @@ public class ParseBookTest {
 
         FolderParser parser = FolderParser.getInstance();
 
-        Book book = parser.parse("Богданов Александр - Инженер Мэнни.fb2",
+        Book book = parser.buildBookFromFilename("Богданов Александр - Инженер Мэнни.fb2",
                 "00 Художественные", "fb2");
         Assert.assertEquals(testAuthorName, book.getAuthor());
         Assert.assertEquals(testBookName, book.getName());
         Assert.assertEquals(note, book.getNote());
+
+        Book book2 = parser.buildBookFromFilename("01. Дэн Аббнет - Возвышение Хоруса.fb2",
+                "Ересь Хоруса", "fb2");
+        testAuthorName = "Дэн Аббнет";
+        testBookName = "Возвышение Хоруса";
+        note = "Ересь Хоруса";
+        Assert.assertEquals(testAuthorName, book2.getAuthor());
+        Assert.assertEquals(testBookName, book2.getName());
+        Assert.assertEquals(note, book2.getNote());
     }
 
     @Test
@@ -52,7 +57,7 @@ public class ParseBookTest {
         String testBookName = splits[1];
 
         FolderParser parser = FolderParser.getInstance();
-        parser.listFilesForFolder(TEST_FOLDER_1);
+        parser.parsePath(TEST_FOLDER_1);
 
         Book book = parser.getBooks().get(0);
         Assert.assertEquals(testAuthorName, book.getAuthor());
@@ -64,7 +69,7 @@ public class ParseBookTest {
     @Test
     public void testRealPath() {
         FolderParser parser = FolderParser.getInstance();
-        parser.listFilesForFolder(TEST_FOLDER_MAIN);
+        parser.parsePath(TEST_FOLDER_MAIN);
         Assert.assertEquals(5, parser.getBooks().size());
         Assert.assertEquals(3, parser.getFolders().size());
     }
@@ -73,7 +78,7 @@ public class ParseBookTest {
     public void checkSaveBooks() {
         try {
             FolderParser parser = FolderParser.getInstance();
-            parser.listFilesForFolder(TEST_FOLDER_MAIN);
+            parser.parsePath(TEST_FOLDER_MAIN);
             Assert.assertEquals(5, parser.getBooks().size());
             Assert.assertEquals(3, parser.getFolders().size());
             bookService.saveBunchOneByOne(parser.getBooks());
