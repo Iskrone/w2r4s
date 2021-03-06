@@ -1,0 +1,10 @@
+# jetbrains
+.idea
+*.iml
+
+# target
+target
+
+# other
+long_queries.log
+*.db
