@@ -18,9 +18,19 @@ public class BookSpecification {
                 criteriaBuilder.like(root.get("name"), "%" + bookName + "%");
     }
 
+    public static Specification<Book> withBookName(final String bookName) {
+        return (Specification<Book>) (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.like(root.get("name"), bookName);
+    }
+
     public static Specification<Book> withAuthorIn(final String authorName) {
         return (Specification<Book>) (root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder.like(root.get("author"), "%" + authorName + "%");
+    }
+
+    public static Specification<Book> withAuthor(final String authorName) {
+        return (Specification<Book>) (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.like(root.get("author"), authorName);
     }
 
     public static Specification<Book> withFinishingDate(final String finishingDate) {

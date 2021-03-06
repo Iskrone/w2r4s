@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 import static org.hibernate.criterion.Restrictions.and;
 
@@ -47,22 +48,23 @@ public class BookService {
         String a2 = author2.toString().substring(0, author2.toString().length() - 1);
 
         if (bookRepository.findOne(
-                Specification.where(BookSpecification.withBookNameIn(book.getName())).and(
-                        BookSpecification.withAuthorIn(a1))).isPresent()) {
+                Specification.where(BookSpecification.withBookName(book.getName())).and(
+                        BookSpecification.withAuthor(a1))).isPresent()) {
             return true;
         }
 
         if (bookRepository.findOne(
-                Specification.where(BookSpecification.withBookNameIn(book.getName())).and(
-                        BookSpecification.withAuthorIn(a2))).isPresent()) {
+                Specification.where(BookSpecification.withBookName(book.getName())).and(
+                        BookSpecification.withAuthor(a2))).isPresent()) {
             return true;
         }
 
         return false;
     }
 
-    public void saveBunch(List<Book> books) {
-        bookRepository.saveAll(books);
+    public long saveBunch(List<Book> books) {
+        Iterable<Book> savedBooks = bookRepository.saveAll(books);
+        return StreamSupport.stream(savedBooks.spliterator(), false).count();
     }
 
     public Long saveBunchOneByOne(List<Book> books) {
@@ -85,7 +87,7 @@ public class BookService {
     public Book getBook(Long id) {
         Optional<Book> book = bookRepository.findById(id);
         //TODO: Переделать на Exception: Book not found
-        return book.isPresent() ? book.get() : null;
+        return book.orElse(null);
     }
 
     public List<Book> getAllBooks() {
