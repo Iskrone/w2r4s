@@ -5,6 +5,7 @@ import me.iskrone.w2r4s.ie.Uploader;
 import me.iskrone.w2r4s.service.BookService;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +25,9 @@ import java.util.List;
 public class SaveBookTest {
 
     private static final String TEST_XLSX = "src/test/java/me/iskrone/w2r4s/data/TestBooks.xlsx";
-    
+
     @Autowired
     private BookService bookService;
-    
-    private List<Long> testBooksIds = new ArrayList<>();
 
     @Test
     public void testAddBook() {
@@ -37,41 +36,38 @@ public class SaveBookTest {
         testBook1.setName("Братья Карамазовы");
         testBook1.setIsDone(true);
         testBook1.setNote("Отличная книга!");
-        testBook1.setIsAudio(false);
+        testBook1.setExtension("fb2");
+        testBook1.setType("Fiction");
         testBook1.setFinishingDate("2013");
         testBook1.setHasPaperBook(false);
         testBook1 = bookService.save(testBook1);
-        testBooksIds.add(testBook1.getId());
 
         Book checkTB1 = bookService.getBook(testBook1.getId());
         Assert.assertEquals(checkTB1.getName(), testBook1.getName());
         Assert.assertEquals(checkTB1.getAuthor(), testBook1.getAuthor());
         Assert.assertEquals(checkTB1.getFinishingDate(), testBook1.getFinishingDate());
-        Assert.assertEquals(checkTB1.getNote(), testBook1.getNote());
+        Assert.assertEquals(checkTB1.getType(), testBook1.getType());
         Assert.assertEquals(checkTB1.getIsDone(), testBook1.getIsDone());
-        Assert.assertEquals(checkTB1.getIsAudio(), testBook1.getIsAudio());
+        Assert.assertEquals(checkTB1.getExtension(), testBook1.getExtension());
         Assert.assertEquals(checkTB1.getHasPaperBook(), testBook1.getHasPaperBook());
+        Assert.assertEquals(checkTB1.getNote(), testBook1.getNote());
     }
 
     @Test
-    public void testAddExistedBook() {
-        Book testBook1 = null;
-        try {
-            testBook1 = new Book();
-            testBook1.setAuthor("Достоевский Федор");
-            testBook1.setName("Братья Карамазовы");
-            testBook1.setIsDone(true);
-            testBook1.setNote("Отличная книга!");
-            testBook1.setIsAudio(false);
-            testBook1.setFinishingDate("2013");
-            testBook1.setHasPaperBook(false);
-            testBook1 = bookService.save(testBook1);
-            Assert.assertNull(testBook1);
-        } finally {
-            if (testBook1 != null) {
-                bookService.removeBook(testBook1.getId());
-            }
-        }
+    public void testIsExistedBook() {
+        Book testBook1 = new Book();
+        testBook1.setAuthor("Достоевский Федор");
+        testBook1.setName("Братья Карамазовы");
+        testBook1.setIsDone(true);
+        testBook1.setNote("Отличная книга!");
+        testBook1.setExtension("fb2");
+        testBook1.setType("Fiction");
+        testBook1.setFinishingDate("2013");
+        testBook1.setHasPaperBook(false);
+        testBook1 = bookService.save(testBook1);
+        
+        boolean exist = bookService.isBookExist(testBook1);
+        Assert.assertTrue(exist);
     }
 
     @Test
@@ -87,22 +83,22 @@ public class SaveBookTest {
             int parsedSize = parsedBooks.size();
             long uploadedSize = bookService.saveBunch(parsedBooks);
             Assert.assertEquals(parsedSize, uploadedSize);
-            
+
             List<Book> books = bookService.getAllBooks();
             Assert.assertEquals(initSize + parsedSize, books.size());
-            
+
             int i = 0;
             for (Book b1 : parsedBooks) {
                 for (Book bDB : books) {
-                    if (bDB.getName().equalsIgnoreCase(b1.getName()) && 
+                    if (bDB.getName().equalsIgnoreCase(b1.getName()) &&
                             bDB.getAuthor().equalsIgnoreCase(b1.getAuthor())) {
                         Assert.assertEquals(b1.getNote(), bDB.getNote());
+                        Assert.assertEquals(b1.getType(), bDB.getType());
                         Assert.assertEquals(b1.getFinishingDate(), bDB.getFinishingDate());
                         Assert.assertEquals(b1.getHasPaperBook(), bDB.getHasPaperBook());
-                        Assert.assertEquals(b1.getIsAudio(), bDB.getIsAudio());
+                        Assert.assertEquals(b1.getExtension(), bDB.getExtension());
                         Assert.assertEquals(b1.getIsDone(), bDB.getIsDone());
                         i++;
-                        testBooksIds.add(bDB.getId());
                     }
                 }
             }
@@ -116,8 +112,6 @@ public class SaveBookTest {
 
     @After
     public void cleanUp() {
-        for (Long id : testBooksIds) {
-            bookService.removeBook(id);
-        }
+        bookService.clearTable();
     }
 }

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * TODO: Добить тесты
  * Created by Iskander on 19.01.2020
  */
 @RunWith(SpringRunner.class)
@@ -22,22 +23,18 @@ public class ServiceTest {
     
     @Autowired
     private BookService bookService;
-    private List<Long> testBooksIds = new ArrayList<>();
     
     @Before
     public void init() {
         List<Book> books = Utils.initBooks();
         for (Book book : books) {
             book = bookService.save(book);
-            testBooksIds.add(book.getId());
         }
     }
     
     @After
     public void cleanUp() {
-        for (Long id : testBooksIds) {
-            bookService.removeBook(id);
-        }
+        bookService.clearTable();
     }
     
     public void testGetData() {

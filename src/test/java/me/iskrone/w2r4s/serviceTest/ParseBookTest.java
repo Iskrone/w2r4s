@@ -4,6 +4,7 @@ import me.iskrone.w2r4s.entity.Book;
 import me.iskrone.w2r4s.parser.FolderParser;
 import me.iskrone.w2r4s.service.BookService;
 import me.iskrone.w2r4s.service.specs.SearchBook;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +30,8 @@ public class ParseBookTest {
     public void parseBook() {
         String testAuthorName = "Богданов Александр";
         String testBookName = "Инженер Мэнни";
-        String note = "00 Художественные";
+        String type = "00 Художественные";
+        String ext = "fb2";
 
         FolderParser parser = FolderParser.getInstance();
 
@@ -37,16 +39,18 @@ public class ParseBookTest {
                 "00 Художественные", "fb2");
         Assert.assertEquals(testAuthorName, book.getAuthor());
         Assert.assertEquals(testBookName, book.getName());
-        Assert.assertEquals(note, book.getNote());
+        Assert.assertEquals(type, book.getType());
+        Assert.assertEquals(ext, book.getExtension());
 
         Book book2 = parser.buildBookFromFilename("01. Дэн Аббнет - Возвышение Хоруса.fb2",
                 "Ересь Хоруса", "fb2");
         testAuthorName = "Дэн Аббнет";
         testBookName = "Возвышение Хоруса";
-        note = "Ересь Хоруса";
+        type = "Ересь Хоруса";
         Assert.assertEquals(testAuthorName, book2.getAuthor());
         Assert.assertEquals(testBookName, book2.getName());
-        Assert.assertEquals(note, book2.getNote());
+        Assert.assertEquals(type, book2.getType());
+        Assert.assertEquals(ext, book2.getExtension());
     }
 
     @Test
@@ -70,30 +74,30 @@ public class ParseBookTest {
     public void testRealPath() {
         FolderParser parser = FolderParser.getInstance();
         parser.parsePath(TEST_FOLDER_MAIN);
-        Assert.assertEquals(5, parser.getBooks().size());
-        Assert.assertEquals(3, parser.getFolders().size());
+        Assert.assertEquals(8, parser.getBooks().size());
+        Assert.assertEquals(5, parser.getFolders().size());
     }
 
     @Test
     public void checkSaveBooks() {
-        try {
-            FolderParser parser = FolderParser.getInstance();
-            parser.parsePath(TEST_FOLDER_MAIN);
-            Assert.assertEquals(5, parser.getBooks().size());
-            Assert.assertEquals(3, parser.getFolders().size());
-            bookService.saveBunchOneByOne(parser.getBooks());
+        FolderParser parser = FolderParser.getInstance();
+        parser.parsePath(TEST_FOLDER_MAIN);
+        Assert.assertEquals(8, parser.getBooks().size());
+        Assert.assertEquals(5, parser.getFolders().size());
+        bookService.saveBunchOneByOne(parser.getBooks());
 
-            SearchBook book = new SearchBook();
-            book.setAuthor("Гоголь");
-            book.setName("Мертвые души");
-            Page<Book> bookPage = bookService.getFilteredBooksWithPagination(book,
-                    PageRequest.of(0, 10));
-            Book bookFound = bookPage.getContent().get(0);
-            Assert.assertEquals(book.getName(), bookFound.getName());
-            Assert.assertEquals("Гоголь Николай", bookFound.getAuthor());
-        } finally {
-            bookService.clearTable();
-            Assert.assertEquals(0, bookService.getAllBooks().size());
-        }
+        SearchBook book = new SearchBook();
+        book.setAuthor("Гоголь");
+        book.setName("Мертвые души");
+        Page<Book> bookPage = bookService.getFilteredBooksWithPagination(book,
+                PageRequest.of(0, 10));
+        Book bookFound = bookPage.getContent().get(0);
+        Assert.assertEquals(book.getName(), bookFound.getName());
+        Assert.assertEquals("Гоголь Николай", bookFound.getAuthor());
+    }
+
+    @After
+    public void cleanUp() {
+        bookService.clearTable();
     }
 }
