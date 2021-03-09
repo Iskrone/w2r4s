@@ -6,11 +6,12 @@ package me.iskrone.w2r4s.service.specs;
 public class SearchBook {
     private String name;
     private String author;
+    private String type;
     private String note;
     private String finishingDate;
 
     private Boolean isDone;
-    private Boolean isAudio;
+    private String extension;
 
     private Boolean hasPaperBook;
 
@@ -18,9 +19,10 @@ public class SearchBook {
         this.name = null;
         this.author = null;
         this.finishingDate = null;
+        this.type = null;
         this.note = null;
         this.isDone = null;
-        this.isAudio = null;
+        this.extension = null;
         this.hasPaperBook = null;
     }
     
@@ -64,12 +66,20 @@ public class SearchBook {
         isDone = done;
     }
 
-    public Boolean getIsAudio() {
-        return isAudio;
+    public String getType() {
+        return type;
     }
 
-    public void setIsAudio(Boolean audio) {
-        isAudio = audio;
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getExtension() {
+        return extension;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
     }
 
     public Boolean getHasPaperBook() {

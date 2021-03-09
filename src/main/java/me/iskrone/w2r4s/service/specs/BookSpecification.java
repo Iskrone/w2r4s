@@ -28,6 +28,16 @@ public class BookSpecification {
                 criteriaBuilder.like(root.get("author"), "%" + authorName + "%");
     }
 
+    public static Specification<Book> withTypeIn(final String type) {
+        return (Specification<Book>) (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.like(root.get("type"), "%" + type + "%");
+    }
+
+    public static Specification<Book> withExtension(final String extension) {
+        return (Specification<Book>) (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("extension"), extension);
+    }
+    
     public static Specification<Book> withAuthor(final String authorName) {
         return (Specification<Book>) (root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder.like(root.get("author"), authorName);
@@ -41,11 +51,6 @@ public class BookSpecification {
     public static Specification<Book> withIsDone(final Boolean isDone) {
         return (Specification<Book>) (root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("isDone"), isDone);
-    }
-
-    public static Specification<Book> withIsAudio(final Boolean isAudio) {
-        return (Specification<Book>) (root, criteriaQuery, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("isAudio"), isAudio);
     }
 
     public static Specification<Book> withHasPaperBook(final Boolean hasPaperBook) {

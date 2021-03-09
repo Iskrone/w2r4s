@@ -28,13 +28,10 @@ public class BookService {
     private BookRepository bookRepository;
 
     public Book save(Book book) {
-        if (!isBookExist(book)) {
-            return bookRepository.save(book);
-        }
-        return null;
+        return bookRepository.save(book);
     }
 
-    private boolean isBookExist(Book book) {
+    public boolean isBookExist(Book book) {
         String[] author = book.getAuthor().split(" ");
         StringBuilder author1 = new StringBuilder();
         StringBuilder author2 = new StringBuilder();
@@ -123,9 +120,12 @@ public class BookService {
                         and(searchBook.getHasPaperBook() == null ?
                                 Specification.where(null) :
                                 BookSpecification.withHasPaperBook(searchBook.getHasPaperBook())).
-                        and(searchBook.getIsAudio() == null ?
+                        and(searchBook.getExtension() == null ?
                                 Specification.where(null) :
-                                BookSpecification.withIsAudio(searchBook.getIsAudio())).
+                                BookSpecification.withExtension(searchBook.getExtension())).
+                        and(searchBook.getType() == null ?
+                                Specification.where(null) :
+                                BookSpecification.withTypeIn(searchBook.getType())).
                         and(searchBook.getIsDone() == null ?
                                 Specification.where(null) :
                                 BookSpecification.withIsDone(searchBook.getIsDone())),

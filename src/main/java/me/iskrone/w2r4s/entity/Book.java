@@ -18,12 +18,12 @@ public class Book {
     
     private String name;
     private String author;
+    private String type;
     private String note;
     private String finishingDate;
-    
-    private boolean isDone;
-    private boolean isAudio;
+    private String extension;
 
+    private boolean isDone;
     private boolean hasPaperBook;
 
     public long getId() {
@@ -50,6 +50,14 @@ public class Book {
         this.author = author;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+    
     public String getNote() {
         return note;
     }
@@ -66,20 +74,20 @@ public class Book {
         this.finishingDate = finishingDate;
     }
 
+    public String getExtension() {
+        return extension;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
+    }
+    
     public boolean getIsDone() {
         return isDone;
     }
 
     public void setIsDone(boolean done) {
         isDone = done;
-    }
-
-    public boolean getIsAudio() {
-        return isAudio;
-    }
-
-    public void setIsAudio(boolean audio) {
-        isAudio = audio;
     }
 
     public boolean getHasPaperBook() {
@@ -94,11 +102,8 @@ public class Book {
         return hasPaperBook ? "Есть" : "Нет";
     }
 
-    public String getIsAudioStr() {
-        return isAudio ? "Есть" : "Нет";
-    }
-
     public String getIsDoneStr() {
         return isDone ? "Прочитана" : "Нет";
     }
+
 }

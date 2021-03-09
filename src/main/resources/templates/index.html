@@ -44,9 +44,10 @@
     <tr>
         <th th:text="Название" />
         <th th:text="Автор" />
-        <th th:text="Прочитана" />
-        <th th:text="Есть_Аудио" />
+        <th th:text="Тип" />
+        <th th:text="Формат" />
         <th th:text="Есть_Бумажная" />
+        <th th:text="Прочитана" />
         <th th:text="Дата_прочтения" />
     </tr>
     </thead>
@@ -56,9 +57,10 @@
         th:alt-title="${iStat.even}? 'even' : 'odd'">
         <td th:text="${book.name}" />
         <td th:text="${book.author}" />
-        <td th:text="${book.isDoneStr}" />
-        <td th:text="${book.isAudioStr}" />
+        <td th:text="${book.type}" />
+        <td th:text="${book.extension}" />
         <td th:text="${book.hasPaperBookStr}" />
+        <td th:text="${book.isDoneStr}" />
         <td th:text="${book.finishingDate}" />
     </tr>
     </tbody>
