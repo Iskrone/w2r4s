@@ -138,33 +138,5 @@ public class FolderParser {
 
             return false;
         }
-
-        private static BookExtension getExtension(String extName) {
-            for (BookExtension extension : BookExtension.values()) {
-                if (extension.name().equalsIgnoreCase(extName)) {
-                    return extension;
-                }
-            }
-
-            throw new NoSuchElementException();
-        }
-
-        public static boolean isFolderExt(String test) {
-            if (contains(test)) {
-                BookExtension testExt = getExtension(test);
-                switch (testExt) {
-                    case COMIX:
-                        return true;
-                    case AUDIO:
-                        return true;
-                    case HTML:
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-
-            return false;
-        }
     }
 }
