@@ -44,9 +44,9 @@ public class Uploader {
                 book.setId((long) cell.getNumericCellValue());
             }
 
-            book.setAuthor(row.getCell(1).getStringCellValue());
-            book.setName(row.getCell(2).getStringCellValue());
-            book.setNote(row.getCell(3).getStringCellValue());
+            book.setAuthor(row.getCell(1) == null ? "" : row.getCell(1).getStringCellValue());
+            book.setName(row.getCell(2) == null ? "" : row.getCell(2).getStringCellValue());
+            book.setType(row.getCell(3) == null ? "" : row.getCell(3).getStringCellValue());
             String strValue;
             cell = row.getCell(4);
             if (cell != null && cell.getCellType().equals(CellType.NUMERIC)) {
@@ -58,9 +58,10 @@ public class Uploader {
                 strValue = formatter.formatCellValue(cell);
             }
             book.setFinishingDate(strValue);
-            book.setIsDone(parseYesOrNo(row.getCell(5).getStringCellValue()));
-            book.setIsAudio(parseYesOrNo(row.getCell(6).getStringCellValue()));
-            book.setHasPaperBook(parseYesOrNo(row.getCell(7).getStringCellValue()));
+            book.setIsDone(row.getCell(5) == null ? false : parseYesOrNo(row.getCell(5).getStringCellValue()));
+            book.setExtension(row.getCell(6) == null ? "" : row.getCell(6).getStringCellValue());
+            book.setHasPaperBook(row.getCell(7) == null ? false : parseYesOrNo(row.getCell(7).getStringCellValue()));
+            book.setNote(row.getCell(8) == null ? "" : row.getCell(8).getStringCellValue());
             books2Add.add(book);
         }
         

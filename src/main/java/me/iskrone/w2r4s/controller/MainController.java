@@ -74,6 +74,9 @@ public class MainController {
     public String parseFolders(Model model, @ModelAttribute PathForm pathForm) {
         if (pathForm.getPath() != null) {
             FolderParser parser = FolderParser.getInstance();
+            if (pathForm.getDefaultDateStr() != null) {
+                parser.addDefaultData(pathForm.getDefaultDateStr());
+            }
             parser.parsePath(pathForm.getPath());
             Long count = bookService.saveBunchOneByOne(parser.getBooks());
             model.addAttribute("result", count);
@@ -118,8 +121,9 @@ public class MainController {
         header.createCell(3).setCellValue("Информация");
         header.createCell(4).setCellValue("Дата прочтения");
         header.createCell(5).setCellValue("Закончена");
-        header.createCell(6).setCellValue("Есть аудио");
+        header.createCell(6).setCellValue("Формат");
         header.createCell(7).setCellValue("Есть бумажная книга");
+        header.createCell(8).setCellValue("Примечания");
 
         int rowNum = 1;
         for (Book book : allBooks) {
@@ -127,11 +131,12 @@ public class MainController {
             row.createCell(0).setCellValue(book.getId());
             row.createCell(1).setCellValue(book.getAuthor());
             row.createCell(2).setCellValue(book.getName());
-            row.createCell(3).setCellValue(book.getNote());
+            row.createCell(3).setCellValue(book.getType());
             row.createCell(4).setCellValue(book.getFinishingDate());
             row.createCell(5).setCellValue(book.getIsDoneStr());
-            row.createCell(6).setCellValue(book.getIsAudioStr());
+            row.createCell(6).setCellValue(book.getExtension());
             row.createCell(7).setCellValue(book.getHasPaperBookStr());
+            row.createCell(8).setCellValue(book.getNote());
         }
         workbook.write(response.getOutputStream());
     }
