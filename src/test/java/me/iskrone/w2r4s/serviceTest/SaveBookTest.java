@@ -30,7 +30,7 @@ public class SaveBookTest {
 
     private static final String TEST_XLSX = "src/test/java/me/iskrone/w2r4s/data/TestBooks.xlsx";
     private static final String TEST_BOOK_TYPE = "TEST_TEST_TEST";
-    
+
     @Autowired
     private BookService bookService;
 
@@ -71,7 +71,7 @@ public class SaveBookTest {
         testBook1.setFinishingDate("2013");
         testBook1.setHasPaperBook(false);
         testBook1 = bookService.save(testBook1);
-        
+
         boolean exist = bookService.isBookExist(testBook1);
         Assert.assertTrue(exist);
     }
@@ -106,7 +106,7 @@ public class SaveBookTest {
             bookService.deleteBooks(bookService.getFilteredBooks(searchBook));
         }
     }
-    
+
     @Test
     public void testUpdateBook() throws W2ROperationFailedException {
         List<Book> list = bookService.getAllBooks();
@@ -123,9 +123,9 @@ public class SaveBookTest {
         testBook1 = bookService.save(testBook1);
         list = bookService.getAllBooks();
         Assert.assertEquals(size + 1, list.size());
-        Book checkTB1 = bookService.getBook(testBook1.getName(), testBook1.getAuthor(), 
+        Book checkTB1 = bookService.getBook(testBook1.getName(), testBook1.getAuthor(),
                 testBook1.getType(), testBook1.getExtension());
-        
+
         Book testBook2 = new Book();
         testBook2.setAuthor("Достоевский Федор");
         testBook2.setName("Братья Карамазовы");
@@ -138,7 +138,7 @@ public class SaveBookTest {
         testBook2 = bookService.save(testBook2);
         list = bookService.getAllBooks();
         Assert.assertEquals(size + 2, list.size());
-        
+
         Book checkTB11 = bookService.getBook(testBook1.getName(), testBook1.getAuthor(),
                 testBook1.getType(), testBook1.getExtension());
         Assert.assertNotNull(checkTB11);
@@ -146,45 +146,39 @@ public class SaveBookTest {
                 testBook2.getType(), testBook2.getExtension());
         Assert.assertNotEquals(checkTB1.getExtension(), checkTB2.getExtension());
     }
-    
+
     @Test
-    public void testParseExcel() throws IOException, ParseException {
+    public void testParseExcel() throws IOException {
         bookService.clearTable();
         File xlsx = new File(TEST_XLSX);
         InputStream targetStream = new FileInputStream(xlsx);
-        Uploader uploader = null;
-        try {
-            long initSize = bookService.getAllBooks().size();
-            uploader = new Uploader(targetStream);
-            List<Book> parsedBooks = uploader.parseBooks();
-            int parsedSize = parsedBooks.size();
-            long uploadedSize = bookService.saveBunch(parsedBooks);
-            Assert.assertEquals(parsedSize, uploadedSize);
+        long initSize = bookService.getAllBooks().size();
+        Uploader uploader = Uploader.getInstance();
+        uploader.parseBooks(targetStream);
+        List<Book> parsedBooks = uploader.getBooks2Add();
+        int parsedSize = parsedBooks.size();
+        long uploadedSize = bookService.saveBunch(parsedBooks);
+        Assert.assertEquals(parsedSize, uploadedSize);
 
-            List<Book> books = bookService.getAllBooks();
-            Assert.assertEquals(initSize + parsedSize, books.size());
+        List<Book> books = bookService.getAllBooks();
+        Assert.assertEquals(initSize + parsedSize, books.size());
 
-            int i = 0;
-            for (Book b1 : parsedBooks) {
-                for (Book bDB : books) {
-                    if (bDB.getName().equalsIgnoreCase(b1.getName()) &&
-                            bDB.getAuthor().equalsIgnoreCase(b1.getAuthor())) {
-                        Assert.assertEquals(b1.getNote(), bDB.getNote());
-                        Assert.assertEquals(b1.getType(), bDB.getType());
-                        Assert.assertEquals(b1.getFinishingDate(), bDB.getFinishingDate());
-                        Assert.assertEquals(b1.getHasPaperBook(), bDB.getHasPaperBook());
-                        Assert.assertEquals(b1.getExtension(), bDB.getExtension());
-                        Assert.assertEquals(b1.getIsDone(), bDB.getIsDone());
-                        i++;
-                    }
+        int i = 0;
+        for (Book b1 : parsedBooks) {
+            for (Book bDB : books) {
+                if (bDB.getName().equalsIgnoreCase(b1.getName()) &&
+                        bDB.getAuthor().equalsIgnoreCase(b1.getAuthor())) {
+                    Assert.assertEquals(b1.getNote(), bDB.getNote());
+                    Assert.assertEquals(b1.getType(), bDB.getType());
+                    Assert.assertEquals(b1.getFinishingDate(), bDB.getFinishingDate());
+                    Assert.assertEquals(b1.getHasPaperBook(), bDB.getHasPaperBook());
+                    Assert.assertEquals(b1.getExtension(), bDB.getExtension());
+                    Assert.assertEquals(b1.getIsDone(), bDB.getIsDone());
+                    i++;
                 }
             }
-            Assert.assertEquals(parsedSize, i);
-        } finally {
-            if (uploader != null) {
-                uploader.close();
-            }
         }
+        Assert.assertEquals(parsedSize, i);
     }
 
     @Test
@@ -194,10 +188,10 @@ public class SaveBookTest {
 
         long booksSizeAfterSave = bookService.saveBunch(books);
         Assert.assertEquals(startSize + books.size(), booksSizeAfterSave);
-        
+
         SearchBook searchBook = new SearchBook();
         searchBook.setType(TEST_BOOK_TYPE);
-        
+
         List<Book> filteredBooks = bookService.getFilteredBooks(searchBook);
         int filteredSize1 = filteredBooks.size();
         bookService.deleteBook(filteredBooks.get(0));
@@ -207,7 +201,7 @@ public class SaveBookTest {
         filteredBooks = bookService.getFilteredBooks(searchBook);
         Assert.assertEquals(0, filteredBooks.size());
     }
-    
+
     @After
     public void cleanUp() {
         SearchBook searchBook = new SearchBook();

@@ -93,18 +93,26 @@ public class MainController {
     @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
     public String upload(@RequestParam("file") MultipartFile file, 
                          @RequestParam("isClearBooks") Boolean isClearBooks, 
-                         ModelMap modelMap) throws IOException, ParseException {
-        Long count = 0L;
+                         ModelMap modelMap) throws IOException {
+        Long countFull;
+        Long countAdd = 0L;
+        int countDel = 0;
         if (file.isEmpty()) {
             modelMap.addAttribute("file", file);
             if (isClearBooks) {
                 bookService.clearTable();
             }
-            Uploader uploader = new Uploader(file.getInputStream());
-            List<Book> books = uploader.parseBooks();
-            count = bookService.saveBunch(books);
+            Uploader uploader = Uploader.getInstance();
+            uploader.parseBooks(file.getInputStream());
+            List<Book> books = uploader.getBooks2Add();
+            countAdd = bookService.saveBunch(books);
+            countDel = uploader.getBooks2Delete().size();
+            bookService.deleteBooks(uploader.getBooks2Delete());
         }
-        modelMap.addAttribute("booksFromFile", count);
+        countFull = countAdd + countDel;
+        modelMap.addAttribute("booksFromFile", countFull);
+        modelMap.addAttribute("addBooksFromFile", countAdd);
+        modelMap.addAttribute("deleteBooksFromFile", countDel);
         return "uploadFile";
     }
 

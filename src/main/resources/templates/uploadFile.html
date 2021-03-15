@@ -25,7 +25,13 @@
     </table>
     <div>
         <p>
-            Добавлено книг: <b th:text="${booksFromFile}"/>
+            Книг в файле: <b th:text="${booksFromFile}"/>
+        </p>
+        <p>
+            Добавлено книг из файла: <b th:text="${addBooksFromFile}"/>
+        </p>
+        <p>
+            Удалено книг: <b th:text="${deleteBooksFromFile}"/>
         </p>
     </div>
 </form>
