@@ -115,28 +115,26 @@ public class MainController {
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("My Books");
         Row header = sheet.createRow(0);
-        header.createCell(0).setCellValue("ID");
-        header.createCell(1).setCellValue("Автор");
-        header.createCell(2).setCellValue("Имя книги");
-        header.createCell(3).setCellValue("Информация");
-        header.createCell(4).setCellValue("Дата прочтения");
-        header.createCell(5).setCellValue("Закончена");
-        header.createCell(6).setCellValue("Формат");
-        header.createCell(7).setCellValue("Есть бумажная книга");
-        header.createCell(8).setCellValue("Примечания");
+        header.createCell(0).setCellValue("Автор");
+        header.createCell(1).setCellValue("Имя книги");
+        header.createCell(2).setCellValue("Информация");
+        header.createCell(3).setCellValue("Дата прочтения");
+        header.createCell(4).setCellValue("Закончена");
+        header.createCell(5).setCellValue("Формат");
+        header.createCell(6).setCellValue("Есть бумажная книга");
+        header.createCell(7).setCellValue("Примечания");
 
         int rowNum = 1;
         for (Book book : allBooks) {
             Row row = sheet.createRow(rowNum++);
-            row.createCell(0).setCellValue(book.getId());
-            row.createCell(1).setCellValue(book.getAuthor());
-            row.createCell(2).setCellValue(book.getName());
-            row.createCell(3).setCellValue(book.getType());
-            row.createCell(4).setCellValue(book.getFinishingDate());
-            row.createCell(5).setCellValue(book.getIsDoneStr());
-            row.createCell(6).setCellValue(book.getExtension());
-            row.createCell(7).setCellValue(book.getHasPaperBookStr());
-            row.createCell(8).setCellValue(book.getNote());
+            row.createCell(0).setCellValue(book.getAuthor());
+            row.createCell(1).setCellValue(book.getName());
+            row.createCell(2).setCellValue(book.getType());
+            row.createCell(3).setCellValue(book.getFinishingDate());
+            row.createCell(4).setCellValue(book.getIsDoneStr());
+            row.createCell(5).setCellValue(book.getExtension());
+            row.createCell(6).setCellValue(book.getHasPaperBookStr());
+            row.createCell(7).setCellValue(book.getNote());
         }
         workbook.write(response.getOutputStream());
     }

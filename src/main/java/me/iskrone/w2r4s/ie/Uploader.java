@@ -39,16 +39,12 @@ public class Uploader {
             }
 
             Book book = new Book();
-            Cell cell = row.getCell(0); //ID
-            if (cell != null && cell.getStringCellValue() != null && !cell.getStringCellValue().equals("")) {
-                book.setId((long) cell.getNumericCellValue());
-            }
-
-            book.setAuthor(row.getCell(1) == null ? "" : row.getCell(1).getStringCellValue());
-            book.setName(row.getCell(2) == null ? "" : row.getCell(2).getStringCellValue());
-            book.setType(row.getCell(3) == null ? "" : row.getCell(3).getStringCellValue());
+            Cell cell; 
+            book.setAuthor(row.getCell(0) == null ? "" : row.getCell(0).getStringCellValue());
+            book.setName(row.getCell(1) == null ? "" : row.getCell(1).getStringCellValue());
+            book.setType(row.getCell(2) == null ? "" : row.getCell(2).getStringCellValue());
             String strValue;
-            cell = row.getCell(4);
+            cell = row.getCell(3);
             if (cell != null && cell.getCellType().equals(CellType.NUMERIC)) {
                 Date date = cell.getDateCellValue();
                 SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
@@ -58,10 +54,10 @@ public class Uploader {
                 strValue = formatter.formatCellValue(cell);
             }
             book.setFinishingDate(strValue);
-            book.setIsDone(row.getCell(5) == null ? false : parseYesOrNo(row.getCell(5).getStringCellValue()));
-            book.setExtension(row.getCell(6) == null ? "" : row.getCell(6).getStringCellValue());
-            book.setHasPaperBook(row.getCell(7) == null ? false : parseYesOrNo(row.getCell(7).getStringCellValue()));
-            book.setNote(row.getCell(8) == null ? "" : row.getCell(8).getStringCellValue());
+            book.setIsDone(row.getCell(4) != null && parseYesOrNo(row.getCell(4).getStringCellValue()));
+            book.setExtension(row.getCell(5) == null ? "" : row.getCell(5).getStringCellValue());
+            book.setHasPaperBook(row.getCell(6) != null && parseYesOrNo(row.getCell(6).getStringCellValue()));
+            book.setNote(row.getCell(7) == null ? "" : row.getCell(7).getStringCellValue());
             books2Add.add(book);
         }
         

@@ -1,38 +1,31 @@
 package me.iskrone.w2r4s.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by Iskander on 14.01.2020
  */
 @Entity
 @Table(name = "BOOKS")
+@IdClass(BookKey.class)
 public class Book {
+
+    @Id
+    private String name;
     
     @Id
-    @GeneratedValue
-    private long id;
-    
-    private String name;
     private String author;
+
+    @Id
     private String type;
-    private String note;
-    private String finishingDate;
+
+    @Id
     private String extension;
 
+    private String note;
+    private String finishingDate;
     private boolean isDone;
     private boolean hasPaperBook;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -105,5 +98,4 @@ public class Book {
     public String getIsDoneStr() {
         return isDone ? "Прочитана" : "Нет";
     }
-
 }
