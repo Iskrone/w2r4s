@@ -9,7 +9,8 @@ import java.util.List;
  * Created by Iskander on 18.01.2020
  */
 public class Utils {
-    public static final String NAME_1 = "Федор Достоевский";
+    private static final String NAME_1 = "Федор Достоевский";
+    private static final String TEST_BOOK_TYPE = "TEST_TEST_TEST";
 
     public static List<Book> initBooks() {
         List<Book> books = new ArrayList<>();
@@ -20,7 +21,7 @@ public class Utils {
         testBook1.setIsDone(true);
         testBook1.setNote("Отличная книга!");
         testBook1.setExtension("fb2");
-        testBook1.setType("Fiction");
+        testBook1.setType(TEST_BOOK_TYPE);
         testBook1.setFinishingDate("2013");
         testBook1.setHasPaperBook(false);
         books.add(testBook1);
@@ -31,7 +32,7 @@ public class Utils {
         testBook2.setIsDone(false);
         testBook2.setNote("Должно быть интересно");
         testBook2.setExtension("audio");
-        testBook2.setType("Экономика, Исследования");
+        testBook2.setType(TEST_BOOK_TYPE);
         testBook2.setFinishingDate(null);
         testBook2.setHasPaperBook(false);
         books.add(testBook2);
@@ -41,8 +42,8 @@ public class Utils {
         testBook3.setName("Остров сокровищ");
         testBook3.setIsDone(true);
         testBook3.setNote("С картинками");
-        testBook2.setExtension("pdf");
-        testBook2.setType("Художественная");
+        testBook3.setExtension("pdf");
+        testBook3.setType(TEST_BOOK_TYPE);
         testBook3.setFinishingDate("До 2012");
         testBook3.setHasPaperBook(true);
         books.add(testBook3);

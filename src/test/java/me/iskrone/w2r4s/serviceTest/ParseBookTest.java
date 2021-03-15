@@ -14,14 +14,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.List;
+
 /**
  * Created by Iskander on 25.01.2020
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 public class ParseBookTest {
-    private static final String TEST_FOLDER_1 = "src/test/java/me/iskrone/w2r4s/data/testFolder/insideFolder2/";
-    private static final String TEST_FOLDER_MAIN = "src/test/java/me/iskrone/w2r4s/data/";
+    private static final String TEST_FOLDER_PATH = "src/test/java/me/iskrone/w2r4s/data/testFolder/";
+    private static final String ROOT_FOLDER_PATH = "src/test/java/me/iskrone/w2r4s/";
+    private static final String DATA_FOLDER_NAME = "data";
+    private static final String INSIDE_FOLDER_1_NAME = "insideFolder1";
+    private static final String INSIDE_FOLDER_2_NAME = "insideFolder2";
 
     @Autowired
     private BookService bookService;
@@ -61,7 +66,7 @@ public class ParseBookTest {
         String testBookName = splits[1];
 
         FolderParser parser = FolderParser.getInstance();
-        parser.parsePath(TEST_FOLDER_1);
+        parser.parsePath(TEST_FOLDER_PATH + INSIDE_FOLDER_2_NAME);
 
         Book book = parser.getBooks().get(0);
         Assert.assertEquals(testAuthorName, book.getAuthor());
@@ -73,7 +78,7 @@ public class ParseBookTest {
     @Test
     public void testRealPath() {
         FolderParser parser = FolderParser.getInstance();
-        parser.parsePath(TEST_FOLDER_MAIN);
+        parser.parsePath(ROOT_FOLDER_PATH + DATA_FOLDER_NAME);
         Assert.assertEquals(8, parser.getBooks().size());
         Assert.assertEquals(5, parser.getFolders().size());
     }
@@ -81,7 +86,7 @@ public class ParseBookTest {
     @Test
     public void checkSaveBooks() {
         FolderParser parser = FolderParser.getInstance();
-        parser.parsePath(TEST_FOLDER_MAIN);
+        parser.parsePath(ROOT_FOLDER_PATH + DATA_FOLDER_NAME);
         Assert.assertEquals(8, parser.getBooks().size());
         Assert.assertEquals(5, parser.getFolders().size());
         bookService.saveBunchOneByOne(parser.getBooks());
@@ -98,6 +103,15 @@ public class ParseBookTest {
 
     @After
     public void cleanUp() {
-        bookService.clearTable();
+        SearchBook searchBook = new SearchBook();
+        searchBook.setType(DATA_FOLDER_NAME);
+        List<Book> list = bookService.getFilteredBooks(searchBook);
+        searchBook = new SearchBook();
+        searchBook.setType(INSIDE_FOLDER_1_NAME);
+        list.addAll(bookService.getFilteredBooks(searchBook));
+        searchBook = new SearchBook();
+        searchBook.setType(INSIDE_FOLDER_2_NAME);
+        list.addAll(bookService.getFilteredBooks(searchBook));
+        bookService.deleteBooks(list);
     }
 }
