@@ -97,8 +97,8 @@ public class FolderParser {
                 book.setFinishingDate(defaultDateStr);
             }
             String[] authorNameSplits = splits[0].split("\\. ");
-            if (authorNameSplits.length == 2) {
-                book.setAuthor(authorNameSplits[1]);
+            if (isNumber(authorNameSplits[0])) {
+                book.setAuthor(splits[0].substring(authorNameSplits[0].length() + 2, splits[0].length()));
             } else {
                 book.setAuthor(splits[0]);
             }
@@ -108,6 +108,18 @@ public class FolderParser {
         return book;
     }
 
+    private Boolean isNumber(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            Long l = Long.parseLong(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
+    }
+    
     public List<File> getFolders() {
         return folders;
     }
