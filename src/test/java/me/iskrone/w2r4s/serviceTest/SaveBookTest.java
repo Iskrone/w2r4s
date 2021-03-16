@@ -18,8 +18,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.ParseException;
+import java.util.Comparator;
 import java.util.List;
+
+import static me.iskrone.w2r4s.Utils.AUTHOR_1;
 
 /**
  * Created by Iskander on 14.01.2020
@@ -181,6 +183,40 @@ public class SaveBookTest {
         Assert.assertEquals(parsedSize, i);
     }
 
+    @Test
+    public void testSortBooks() {
+        List<Book> books = Utils.initBooks();
+        bookService.saveBunch(books);
+        SearchBook searchBook = new SearchBook();
+        searchBook.setType(TEST_BOOK_TYPE);
+        List<Book> booksFromDB = bookService.getFilteredBooks(searchBook);
+        books.sort(Comparator.comparing(Book::getAuthor));
+        for (int i = 0; i < booksFromDB.size(); i++) {
+            Book b1 = booksFromDB.get(i);
+            Book b2 = books.get(i);
+            Assert.assertEquals(b1.getAuthor(), b2.getAuthor());
+            Assert.assertEquals(b1.getName(), b2.getName());
+            Assert.assertEquals(b1.getExtension(), b2.getExtension());
+        }
+    }
+
+    @Test
+    public void testSearchBooks() {
+        List<Book> books = Utils.initBooks();
+        bookService.saveBunch(books);
+        int c1 = bookService.getAllBooks().size();
+        SearchBook searchBook = new SearchBook();
+        int c2 = bookService.getFilteredBooks(searchBook).size();
+        Assert.assertEquals(c1, c2);
+        int c3 = bookService.getFilteredBooks(null).size();
+        Assert.assertEquals(c2, c3);
+        
+        searchBook.setAuthor(AUTHOR_1);
+        int c4 = bookService.getFilteredBooks(searchBook).size();
+        Assert.assertEquals(1, c4);
+        Assert.assertNotEquals(c2, c4);
+    }
+    
     @Test
     public void testDeleteBooks() {
         int startSize = bookService.getAllBooks().size();

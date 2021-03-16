@@ -15,6 +15,7 @@ public class Book {
     
     @Id
     private String author;
+    public static final String AUTHOR_DB_FIELD = "author";
 
     @Id
     private String type;

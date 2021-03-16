@@ -45,18 +45,11 @@ public class MainController {
             @RequestParam("size") Optional<Integer> size) {
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(20);
-        Page<Book> bookPage;
-        if ((filterForm.getAuthorFilter() != null && !filterForm.getAuthorFilter().equals("")) ||
-                (filterForm.getNameFilter() != null && !filterForm.getNameFilter().equals(""))) {
-            SearchBook book = new SearchBook();
-            book.setAuthor(filterForm.getAuthorFilter());
-            book.setName(filterForm.getNameFilter());
-            bookPage = bookService.getFilteredBooksWithPagination(book,
-                    PageRequest.of(currentPage - 1, pageSize));
-        } else {
-            bookPage = bookService.getBooksWithPagination(PageRequest.of(currentPage - 1, pageSize));
-        }
-
+        SearchBook book = new SearchBook();
+        book.setAuthor(filterForm.getAuthorFilter());
+        book.setName(filterForm.getNameFilter());
+        Page<Book> bookPage = 
+                bookService.getFilteredBooksWithPagination(book, PageRequest.of(currentPage - 1, pageSize));
         model.addAttribute("bookPage", bookPage);
 
         int totalPages = bookPage.getTotalPages();

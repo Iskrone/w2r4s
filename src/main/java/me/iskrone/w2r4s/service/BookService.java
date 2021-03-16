@@ -6,10 +6,7 @@ import me.iskrone.w2r4s.repository.BookRepository;
 import me.iskrone.w2r4s.service.specs.BookSpecification;
 import me.iskrone.w2r4s.service.specs.SearchBook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +14,7 @@ import java.util.List;
 import java.util.stream.StreamSupport;
 
 /**
+ * Сервис для работы с книгами
  * Created by Iskander on 14.01.2020
  */
 @Service
@@ -94,32 +92,34 @@ public class BookService {
 
         return books.get(0);
     }
-
+    
     public List<Book> getAllBooks() {
-        return (List<Book>) bookRepository.findAll();
+        return getFilteredBooks(null);
     }
 
-    public Page<Book> getBooksWithPagination(Pageable pageable) {
-        int pageSize = pageable.getPageSize();
-        int currentPage = pageable.getPageNumber();
-        PageRequest pageRequest = PageRequest.of(currentPage, pageSize);
-        long size = bookRepository.count();
-
-        List<Book> bookList = bookRepository.findAll(pageRequest).getContent();
-        return new PageImpl<>(bookList, PageRequest.of(currentPage, pageSize), size);
-    }
-    
+    /**
+     * Получить все книги с фильтрацией, отстортированы по автору
+     * @param searchBook данные для фильтрации
+     * @return все книги с фильтрацией, отстортированы по автору
+     */
     public List<Book> getFilteredBooks(SearchBook searchBook) {
-        return bookRepository.findAll(createBookSpec(searchBook));
+        return bookRepository.findAll(createBookSpec(searchBook), Sort.by(Sort.Direction.ASC, Book.AUTHOR_DB_FIELD));
     }
-    
+
+    /**
+     * Получить все книги с фильтрацией, отстортированы по автору и с пейджированием
+     * @param searchBook данные для фильтрации
+     * @param pageable пейджирование
+     * @return все книги с фильтрацией, отстортированы по автору и с пейджированием
+     */
     public Page<Book> getFilteredBooksWithPagination(SearchBook searchBook, Pageable pageable) {
         int pageSize = pageable.getPageSize();
         int currentPage = pageable.getPageNumber();
         PageRequest pageRequest = PageRequest.of(currentPage, pageSize);
+        Sort sort = Sort.by(Sort.Direction.ASC, Book.AUTHOR_DB_FIELD);
         long size = bookRepository.count();
 
-        List<Book> bookList = bookRepository.findAll(createBookSpec(searchBook), pageRequest).getContent();
+        List<Book> bookList = bookRepository.findAll(createBookSpec(searchBook), pageRequest, sort).getContent();
 
         return new PageImpl<>(bookList, PageRequest.of(currentPage, pageSize), size);
     }
@@ -137,6 +137,9 @@ public class BookService {
     }
 
     private Specification<Book> createBookSpec(SearchBook searchBook) {
+        if (searchBook == null) {
+            return Specification.where(null);
+        }
         return Specification.where(searchBook.getName() == null ?
                 Specification.where(null) :
                 BookSpecification.withBookNameIn(searchBook.getName())).

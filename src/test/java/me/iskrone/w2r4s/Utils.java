@@ -9,14 +9,14 @@ import java.util.List;
  * Created by Iskander on 18.01.2020
  */
 public class Utils {
-    private static final String NAME_1 = "Федор Достоевский";
+    public static final String AUTHOR_1 = "Федор Достоевский1";
     private static final String TEST_BOOK_TYPE = "TEST_TEST_TEST";
 
     public static List<Book> initBooks() {
         List<Book> books = new ArrayList<>();
 
         Book testBook1 = new Book();
-        testBook1.setAuthor(NAME_1);
+        testBook1.setAuthor(AUTHOR_1);
         testBook1.setName("Братья Карамазовы");
         testBook1.setIsDone(true);
         testBook1.setNote("Отличная книга!");
