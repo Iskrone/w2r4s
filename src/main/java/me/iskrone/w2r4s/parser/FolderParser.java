@@ -17,7 +17,7 @@ public class FolderParser {
     private Queue<File> foldersQueue = new PriorityQueue<>();
     private List<File> folders = new ArrayList<>();
     private List<Book> books = new ArrayList<>();
-    private int countFiles = 0;
+    private long countSeemsBookFiles = 0;
     private String defaultDateStr = "";
 
     private FolderParser() {
@@ -32,12 +32,11 @@ public class FolderParser {
     }
 
     public void parsePath(String path) {
-        countFiles = 0;
+        countSeemsBookFiles = 0;
         foldersQueue = new PriorityQueue<>();
         folders = new ArrayList<>();
         books = new ArrayList<>();
         listFilesForFolder(path);
-        System.out.println(countFiles);
     }
     
     public void addDefaultData(String defaultDate) {
@@ -75,9 +74,12 @@ public class FolderParser {
     private void addBookFromFilename(final File fileEntry, File folder) {
         String ext = FilenameUtils.getExtension(fileEntry.getName());
         if (BookExtension.contains(ext)) {
+            countSeemsBookFiles++;
             Book book = buildBookFromFilename(fileEntry.getName(), folder.getName(), ext);
             if (book != null) {
                 books.add(book);
+            } else {
+                System.out.println(fileEntry.getName());
             }
         }
     }
@@ -114,6 +116,10 @@ public class FolderParser {
         return books;
     }
 
+    public long getCountSeemsBookFiles() {
+        return countSeemsBookFiles;
+    }
+    
     private enum BookExtension {
         FB2,
         EPUB,

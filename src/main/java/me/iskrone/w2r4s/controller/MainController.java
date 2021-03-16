@@ -22,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -73,6 +72,7 @@ public class MainController {
             parser.parsePath(pathForm.getPath());
             Long count = bookService.saveBunchOneByOne(parser.getBooks());
             model.addAttribute("result", count);
+            model.addAttribute("allFiles", parser.getCountSeemsBookFiles());
         }
         return "collect";
     }
