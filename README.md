@@ -1,6 +1,8 @@
 # w2r4s
 Want2Read4Spring
 
+**General Info**:
+
 Simple Book Library. 
 Test App on Spring Boot + Thymeleaf + H2 DB. 
 1. Shows a list of Books from DB 
