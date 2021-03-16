@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 public interface BookRepository extends CrudRepository<Book, Long>, JpaSpecificationExecutor<Book> {
-    Page<Book> findAll(Specification<Book> bookSpec, Pageable pageable, Sort sort);
+    Page<Book> findAll(Specification<Book> bookSpec, Pageable pageable);
     
     List<Book> findAll(Specification<Book> bookSpec, Sort sort);
 

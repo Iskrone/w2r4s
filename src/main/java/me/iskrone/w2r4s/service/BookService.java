@@ -115,11 +115,11 @@ public class BookService {
     public Page<Book> getFilteredBooksWithPagination(SearchBook searchBook, Pageable pageable) {
         int pageSize = pageable.getPageSize();
         int currentPage = pageable.getPageNumber();
-        PageRequest pageRequest = PageRequest.of(currentPage, pageSize);
         Sort sort = Sort.by(Sort.Direction.ASC, Book.AUTHOR_DB_FIELD);
+        PageRequest pageRequest = PageRequest.of(currentPage, pageSize, sort);
         long size = bookRepository.count();
 
-        List<Book> bookList = bookRepository.findAll(createBookSpec(searchBook), pageRequest, sort).getContent();
+        List<Book> bookList = bookRepository.findAll(createBookSpec(searchBook), pageRequest).getContent();
 
         return new PageImpl<>(bookList, PageRequest.of(currentPage, pageSize), size);
     }
