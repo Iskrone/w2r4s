@@ -8,6 +8,7 @@ import me.iskrone.w2r4s.service.BookService;
 import me.iskrone.w2r4s.service.specs.SearchBook;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -151,7 +152,6 @@ public class SaveBookTest {
 
     @Test
     public void testParseExcel() throws IOException {
-        bookService.clearTable();
         File xlsx = new File(TEST_XLSX);
         InputStream targetStream = new FileInputStream(xlsx);
         long initSize = bookService.getAllBooks().size();
@@ -244,5 +244,11 @@ public class SaveBookTest {
         searchBook.setType(TEST_BOOK_TYPE);
         List<Book> list = bookService.getFilteredBooks(searchBook);
         bookService.deleteBooks(list);
+    }
+    
+    @Test
+    @Ignore
+    public void cleanUtil() {
+        bookService.clearTable();
     }
 }
