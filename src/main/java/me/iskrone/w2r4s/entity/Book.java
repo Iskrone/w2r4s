@@ -18,11 +18,9 @@ public class Book {
     public static final String AUTHOR_DB_FIELD = "author";
 
     @Id
-    private String type;
-
-    @Id
     private String extension;
 
+    private String type;
     private String note;
     private String finishingDate;
     private boolean isDone;
