@@ -19,7 +19,7 @@ Test App on Spring Boot + Thymeleaf + H2 DB.
 5. Get new XLSX with all changes
 
 **Parse directory features**:<br>
-Name, author, extension(format), type - makes book unique.
+Name, author, extension(format) - makes book unique.
 So you can put books with the same author and name in different directories, according to your ideas.
 For example different languages.
 
