@@ -153,34 +153,35 @@ public class SaveBookTest {
     @Test
     public void testParseExcel() throws IOException {
         File xlsx = new File(TEST_XLSX);
-        InputStream targetStream = new FileInputStream(xlsx);
-        long initSize = bookService.getAllBooks().size();
-        Uploader uploader = Uploader.getInstance();
-        uploader.parseBooks(targetStream);
-        List<Book> parsedBooks = uploader.getBooks2Add();
-        int parsedSize = parsedBooks.size();
-        long uploadedSize = bookService.saveBunch(parsedBooks);
-        Assert.assertEquals(parsedSize, uploadedSize);
+        try (InputStream targetStream = new FileInputStream(xlsx)) {
+            long initSize = bookService.getAllBooks().size();
+            Uploader uploader = Uploader.getInstance();
+            uploader.parseBooks(targetStream);
+            List<Book> parsedBooks = uploader.getBooks2Add();
+            int parsedSize = parsedBooks.size();
+            long uploadedSize = bookService.saveBunch(parsedBooks);
+            Assert.assertEquals(parsedSize, uploadedSize);
 
-        List<Book> books = bookService.getAllBooks();
-        Assert.assertEquals(initSize + parsedSize, books.size());
+            List<Book> books = bookService.getAllBooks();
+            Assert.assertEquals(initSize + parsedSize, books.size());
 
-        int i = 0;
-        for (Book b1 : parsedBooks) {
-            for (Book bDB : books) {
-                if (bDB.getName().equalsIgnoreCase(b1.getName()) &&
-                        bDB.getAuthor().equalsIgnoreCase(b1.getAuthor())) {
-                    Assert.assertEquals(b1.getNote(), bDB.getNote());
-                    Assert.assertEquals(b1.getType(), bDB.getType());
-                    Assert.assertEquals(b1.getFinishingDate(), bDB.getFinishingDate());
-                    Assert.assertEquals(b1.getHasPaperBook(), bDB.getHasPaperBook());
-                    Assert.assertEquals(b1.getExtension(), bDB.getExtension());
-                    Assert.assertEquals(b1.getIsDone(), bDB.getIsDone());
-                    i++;
+            int i = 0;
+            for (Book b1 : parsedBooks) {
+                for (Book bDB : books) {
+                    if (bDB.getName().equalsIgnoreCase(b1.getName()) &&
+                            bDB.getAuthor().equalsIgnoreCase(b1.getAuthor())) {
+                        Assert.assertEquals(b1.getNote(), bDB.getNote());
+                        Assert.assertEquals(b1.getType(), bDB.getType());
+                        Assert.assertEquals(b1.getFinishingDate(), bDB.getFinishingDate());
+                        Assert.assertEquals(b1.getHasPaperBook(), bDB.getHasPaperBook());
+                        Assert.assertEquals(b1.getExtension(), bDB.getExtension());
+                        Assert.assertEquals(b1.getIsDone(), bDB.getIsDone());
+                        i++;
+                    }
                 }
             }
+            Assert.assertEquals(parsedSize, i);
         }
-        Assert.assertEquals(parsedSize, i);
     }
 
     @Test

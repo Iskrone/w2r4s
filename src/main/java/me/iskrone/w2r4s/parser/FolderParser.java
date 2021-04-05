@@ -45,22 +45,25 @@ public class FolderParser {
 
     private void listFilesForFolder(String path) {
         File folder = new File(path);
-        for (final File fileEntry : Objects.requireNonNull(folder.listFiles())) {
-            if (!fileEntry.getName().startsWith("-")) {
-                if (fileEntry.isDirectory()) {
-                    String extension = FilenameUtils.getExtension(fileEntry.getName());
-                    if (BookExtension.HTML.name().equalsIgnoreCase(extension) ||
-                            BookExtension.COMIX.name().equalsIgnoreCase(extension)) {
-                        addBookFromFilename(fileEntry, folder);
-                    } else {
-                        if (BookExtension.AUDIO.name().equalsIgnoreCase(extension)) {
+        File[] files = folder.listFiles();
+        if (files != null) {
+            for (final File fileEntry : files) {
+                if (!fileEntry.getName().startsWith("-")) {
+                    if (fileEntry.isDirectory()) {
+                        String extension = FilenameUtils.getExtension(fileEntry.getName());
+                        if (BookExtension.HTML.name().equalsIgnoreCase(extension) ||
+                                BookExtension.COMIX.name().equalsIgnoreCase(extension)) {
                             addBookFromFilename(fileEntry, folder);
+                        } else {
+                            if (BookExtension.AUDIO.name().equalsIgnoreCase(extension)) {
+                                addBookFromFilename(fileEntry, folder);
+                            }
+                            foldersQueue.add(fileEntry);
                         }
-                        foldersQueue.add(fileEntry);
+                        folders.add(fileEntry);
+                    } else {
+                        addBookFromFilename(fileEntry, folder);
                     }
-                    folders.add(fileEntry);
-                } else {
-                    addBookFromFilename(fileEntry, folder);
                 }
             }
         }
@@ -113,7 +116,7 @@ public class FolderParser {
             return false;
         }
         try {
-            Long l = Long.parseLong(strNum);
+            Long.parseLong(strNum);
         } catch (NumberFormatException nfe) {
             return false;
         }
